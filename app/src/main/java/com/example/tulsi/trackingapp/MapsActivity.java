@@ -2,6 +2,7 @@ package com.example.tulsi.trackingapp;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -12,12 +13,54 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.example.tulsi.trackingapp.Main2Activity.latlngs23;
+
+
+class info {
+
+    public double laditude;
+    public double longditude;
+    public Date aqrDate;
+
+    public info() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+    public info(double laditude, double longditude, Date aqrDate) {
+        this.laditude = laditude;
+        this.longditude = longditude;
+        this.aqrDate = aqrDate;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("latitiude", laditude);
+        result.put("longitude", longditude);
+        result.put("acq_date", aqrDate);
+
+
+        return result;
+    }
+
+
+}
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private ArrayList<LatLng> latlngs = new ArrayList<>();
+    private ArrayList<LatLng> latlngs2 = new ArrayList<>();
     private GoogleMap mMap;
 
 
@@ -30,6 +73,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+        //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("server/firedata/australia/0");
+        DatabaseReference database2 = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = database2.child("server").child("firedata").child("australia");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    String lad = childSnapshot.child("latitiude").getValue(String.class);
+                    String longd = childSnapshot.child("longitude").getValue(String.class);
+                    String acq = childSnapshot.child("acq_date").getValue(String.class);
+                    //Log.d(TAG, "Score: " + score);
+                    double con_lad = Double.valueOf(lad);
+                    double con_longd = Double.valueOf(longd);
+
+
+                    latlngs2.add(new LatLng(con_lad, con_longd));
+                    Log.d("HELOOOO", "HELOOOO "+ Double.valueOf(lad) +" "+Double.valueOf(longd) + " "+acq +" "+latlngs2.size());
+                }
+              //  info post = dataSnapshot.getValue(info.class);
+
+
+                //  String likes = dataSnapshot.getValue(String.class);
+               // Log.d("HELOOOO", "HELOOOO "+ likes);
+
+               // double lad = dataSnapshot.child("latitude").getValue(double.class);
+                //double longd = dataSnapshot.child("longitude").getValue(double.class);
+                //String acq = dataSnapshot.child("acq_date").getValue(String.class);
+               // Log.d("HELOOOO", "HELOOOO "+ post.laditude +" "+post.longditude + " "+post.aqrDate);
+                /*
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren())
+                {
+                    double lad = childSnapshot.child("latitude").getValue(double.class);
+                    double longd = childSnapshot.child("longitude").getValue(double.class);
+                    String acq = childSnapshot.child("acq_date").getValue(String.class);
+
+                    // info clubkey = childSnapshot.getValue(info.class);
+                    Log.d("HELOOOO", "HELOOOO "+ lad +" "+longd + " "+acq);
+                }
+*/
+               // info email = dataSnapshot.getValue(info.class);
+               // Log.d("HELOOOO", "HELOOOO "+email.laditude);
+                //do what you want with the email
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
 
 
         latlngs.add(new LatLng(-18.422,145.321));
@@ -168,12 +268,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.addMarker(marker);
 
-
-        for(int i=0; i<latlngs.size(); ++i)
+        Log.d("HELOOOO", "SIZEEEEEEEEEEEEEEEEE "+latlngs23.size());
+        for(int i=0; i<latlngs23.size(); ++i)
         {
             //MarkerOptions marker = new MarkerOptions().position(sydney).title("testest");
            // marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.flame));
-            mMap.addMarker(new MarkerOptions().position(latlngs.get(i)).title("testest").icon(BitmapDescriptorFactory.fromResource(R.drawable.flame)));
+            mMap.addMarker(new MarkerOptions().position(latlngs23.get(i)).title("testest").icon(BitmapDescriptorFactory.fromResource(R.drawable.flame)));
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));

@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.test.mock.MockPackageManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,12 +20,19 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static ArrayList<LatLng> latlngs23 = new ArrayList<>();
     private Button btnShowLocation,btnshowMap;
     FirebaseDatabase database;
     DatabaseReference myRef;
@@ -88,7 +96,42 @@ public class Main2Activity extends AppCompatActivity
             }
 
         });
+
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+
+        //DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("server/firedata/australia/0");
+        DatabaseReference database2 = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = database2.child("server").child("firedata").child("australia");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                    String lad = childSnapshot.child("latitiude").getValue(String.class);
+                    String longd = childSnapshot.child("longitude").getValue(String.class);
+                    String acq = childSnapshot.child("acq_date").getValue(String.class);
+                    //Log.d(TAG, "Score: " + score);
+                    double con_lad = Double.valueOf(lad);
+                    double con_longd = Double.valueOf(longd);
+
+
+                    latlngs23.add(new LatLng(con_lad, con_longd));
+                    Log.d("HELOOOO", "HELOOOO "+ Double.valueOf(lad) +" "+Double.valueOf(longd) + " "+acq +" "+latlngs23.size());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
+
+
 
     public void Map(View view){
 
