@@ -1,8 +1,13 @@
 package com.example.tulsi.trackingapp;
 
+import android.location.Location;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,7 +25,10 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,13 +40,13 @@ class info {
 
     public double laditude;
     public double longditude;
-    public Date aqrDate;
+    public String aqrDate;
 
     public info() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public info(double laditude, double longditude, Date aqrDate) {
+    public info(double laditude, double longditude, String aqrDate) {
         this.laditude = laditude;
         this.longditude = longditude;
         this.aqrDate = aqrDate;
@@ -233,6 +241,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         latlngs.add(new LatLng(-19.844,144.586));
     }
 
+        public void showAlertDialogButtonClicked(View view, double pos) {        // setup the alert builder
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("WARNING");
+            builder.setMessage("YOU ARE IN DANGER PLEASE EVACUATE "+pos);        // add a button
+            builder.setPositiveButton("OK", null);        // create and show the alert dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+
+
+    }
+
+    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+                * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+                + " Meter   " + meterInDec);
+
+        return meterInDec;
+    }
+
+    static LatLng currentMarker = new LatLng(-33.852, 151.211);
     static final LatLng myLocation = new LatLng(-33.852, 151.211);
 
     /**
@@ -247,6 +296,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+
+                currentMarker = marker.getPosition();
+
+                for(int i=0; i<latlngs23.size(); ++i)
+                {
+                    Location markerLoc = new Location("Marker");
+                    markerLoc.setLatitude(marker.getPosition().latitude);
+                    markerLoc.setLongitude(marker.getPosition().longitude);
+
+                    Location markerLoc2 = new Location("Marker");
+                    markerLoc2.setLatitude(latlngs23.get(i).latitude);
+                    markerLoc2.setLongitude(latlngs23.get(i).longitude);
+                    double calc = markerLoc.distanceTo(markerLoc2);
+                    //double calc = CalculationByDistance(marker.getPosition(), latlngs23.get(i));
+                    if (calc < 10000.0)
+                    {
+                        showAlertDialogButtonClicked(null, calc);
+                        break;
+                    }
+                }
+
+               // showAlertDialogButtonClicked(null, marker.getPosition());
+
+            }
+
+        });
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng arg0) {
@@ -261,6 +349,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-33.852, 151.211);
         MarkerOptions marker = new MarkerOptions().position(myLocation).title("testest").draggable(true);
         marker.icon(BitmapDescriptorFactory.defaultMarker(1));
+
+        currentMarker = sydney;
 
 
 
@@ -283,5 +373,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(12);
         mMap.moveCamera(zoom);
         mMap.animateCamera(zoom);
+
+
+
+    }
+
+
+    public void Emergency(View view) {
+        FirebaseDatabase database;
+        DatabaseReference myRef;
+
+
+        //-30.088366, 145.971019 middle of aus
+        double latitude = currentMarker.latitude;
+        double longitude = currentMarker.longitude;
+        database = FirebaseDatabase.getInstance();
+        // location.setText(latitude+""+longitude);
+        myRef = database.getReference();
+
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+        Date date = new Date(System.currentTimeMillis());
+       // System.out.println(formatter.format(date));
+
+        info test = new info(latitude, longitude, formatter.format(date));
+        myRef.child("users").child("userMobile").setValue(test);
+
+        Snackbar.make(view, "Sent Help to Emergency Contacts!", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 }

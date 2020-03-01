@@ -18,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text=" FireEscape - Your Safety Matter"
+        android:text="FireScape"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="22dp"
         android:textStyle="bold" />
