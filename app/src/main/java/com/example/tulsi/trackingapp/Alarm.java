@@ -1,7 +1,10 @@
 package com.example.tulsi.trackingapp;
 
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 public class Alarm extends AppCompatActivity {
 
@@ -9,5 +12,10 @@ public class Alarm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+    }
+
+    public void Emergency(View view) {
+        Snackbar.make(view, "Send text message later I think", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
     }
 }
