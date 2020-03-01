@@ -87,12 +87,14 @@ public class Main2Activity extends AppCompatActivity
                     double latitude = gps.getLatitude();
                     double longitude = gps.getLongitude();
                     database = FirebaseDatabase.getInstance();
-                    location.setText(latitude+""+longitude);
+                    location.setText(latitude+" "+longitude +" \n You are In [Rowan University]");
                     myRef = database.getReference("Location");
                     myRef.setValue(latitude+","+longitude);
                 }else{
                     gps.showSettingsAlert();
                 }
+
+
             }
 
         });

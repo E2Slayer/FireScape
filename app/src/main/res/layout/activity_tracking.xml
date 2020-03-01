@@ -25,7 +25,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="20sp"
         android:fontFamily="@font/lobster"
-        android:text="Location Tracker"
+        android:text="FireScape"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="30sp" />

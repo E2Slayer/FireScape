@@ -11,40 +11,25 @@
         android:id="@+id/satelit_id"
         android:layout_width="179dp"
         android:layout_height="154dp"
-        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="126dp"
+
         android:contentDescription="@string/image_satelit"
-        android:src="@drawable/flame2" />
-
-
+        android:src="@drawable/fireescaper" />
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
+        android:layout_below="@+id/satelit_id"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="326dp"
         android:fontFamily="sans-serif"
         android:text="FireScape"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
+        android:textSize="60sp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/satelit_id"
-        android:layout_centerHorizontal="true"
-
-        android:layout_marginTop="24dp"
-        android:fontFamily="casual"
-        android:text="Safety Always Matters"
-        android:textColor="@color/cardview_dark_background"
-        android:textSize="30sp"
-        android:textStyle="bold|italic" />
 
     <Button
         android:id="@+id/button_sign_in"
@@ -69,4 +54,5 @@
         android:onClick="Signup"
         android:text="@string/sign_up"
         android:textColor="@android:color/white" />
+
 </RelativeLayout>
