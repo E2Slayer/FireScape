@@ -291,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("WARNING");
-            builder.setMessage("YOU ARE IN DANGER PLEASE EVACUATE "+pos);        // add a button
+            builder.setMessage("THERE IS A FIRE NEARBY \nYOU ARE IN DANGER \nEVACUATE IMMEDIATELY");        // add a button
             builder.setPositiveButton("OK", null);        // create and show the alert dialog
             AlertDialog dialog = builder.create();
             dialog.show();
