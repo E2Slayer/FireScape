@@ -38,25 +38,25 @@ import static com.example.tulsi.trackingapp.Main2Activity.latlngs23;
 
 class info {
 
-    public double laditude;
-    public double longditude;
+    public double latitude;
+    public double longitude;
     public String aqrDate;
 
     public info() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public info(double laditude, double longditude, String aqrDate) {
-        this.laditude = laditude;
-        this.longditude = longditude;
+    public info(double latitude, double longitude, String aqrDate) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.aqrDate = aqrDate;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("latitiude", laditude);
-        result.put("longitude", longditude);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
         result.put("acq_date", aqrDate);
 
 
