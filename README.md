@@ -51,13 +51,8 @@ Now, you are good to go!
 
 ## DevPost
 
-You may find more details on the DevPost link[FireEscape](https://devpost.com/software/firescape-7y4hsd)
+You may find more details on the DevPost link [FireEscape](https://devpost.com/software/firescape-7y4hsd)
 
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
